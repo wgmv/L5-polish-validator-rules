@@ -12,7 +12,7 @@ class PeselNumberRule implements Rule
             return false;
         }
 
-        if(! $this->checkValidDate($value)) {
+        if(! $this->checkValidBirthdate($value)) {
             return false;
         }
 
@@ -37,12 +37,14 @@ class PeselNumberRule implements Rule
             : trans('kd-validator::validation.pesel');
     }
 
-    private function checkValidDate($value)
+    private function checkValidBirthdate($value)
     {
         $date = [substr($value,2,2), substr($value,4,2), substr($value,0,2)];
 
-        $check1 = checkdate(intval($date[0]), intval($date[1]), intval("19".$date[2])) && intval("19".$date[2]) < date('Y');
-        $check2 = checkdate(intval($date[0]) - 20, intval($date[1]), intval("20".$date[2])) && intval("20".$date[2]) < date('Y');
+        //check1 checks for dates smaller 1999
+        $check1 = checkdate(intval($date[0]), intval($date[1]), intval("19".$date[2])) && intval("19".$date[2]) <= date('Y');
+        //check2 checks for dates between 2000 and 2099
+        $check2 = checkdate(intval($date[0]) - 20, intval($date[1]), intval("20".$date[2])) && intval("20".$date[2]) <= date('Y');
 
         return $check1 || $check2;
     }
